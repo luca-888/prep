@@ -3,11 +3,6 @@
 每幕一个 `## 幕 id`，每行一句配音（即一条字幕）。`# 动作：` 是这句对应的画面；`# +N` 表示这句说完后画面再走 N 秒。
 改完运行 `node build.mjs`，重新生成 `assets/beats.js`、`compositions/captions.html` 与 `index.html`。
 
-## 读法
-nums → numbers
-lo → low
-hi → high
-
 ## s01
 数组占用一段连续的内存，按下标可以直接读写任意一个元素。
 # 动作：六个格子连成一排，下标 0 到 5 出现；下标 3 的格子直接点亮。
