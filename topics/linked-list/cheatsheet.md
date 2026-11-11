@@ -1,4 +1,4 @@
-规则：修改一根指针之前，先保存它原来指向的节点。
+> **规则**：修改一根指针之前，先保存它原来指向的节点。
 
 | 看到 | 用 |
 | --- | --- |
@@ -7,14 +7,14 @@
 | 中点、倒数第 k 个、是否有环 | 快慢指针 |
 | 首尾配对、回文、排序 | 找中点 + 反转或合并 |
 
-**删除 / 插入**
+### 删除与插入
 
 ```python
 prev.next = prev.next.next                 # 删除 prev 之后的节点
 node.next = prev.next; prev.next = node    # 在 prev 之后插入，顺序不能反
 ```
 
-**哑节点**：遍历时删除
+### 哑节点：遍历时删除
 
 ```python
 dummy = ListNode(0, head)
@@ -27,7 +27,7 @@ while prev.next:
 return dummy.next
 ```
 
-**哑节点**：合并两个有序链表
+### 哑节点：合并两个有序链表
 
 ```python
 dummy = tail = ListNode()
@@ -39,7 +39,7 @@ tail.next = a or b
 return dummy.next
 ```
 
-**反转**
+### 反转
 
 ```python
 prev, cur = None, head
@@ -51,7 +51,7 @@ while cur:
 return prev
 ```
 
-**反转第 left 到第 right 个节点**（头插法）
+### 反转第 left 到第 right 个节点（头插法）
 
 ```python
 dummy = ListNode(0, head)
@@ -66,7 +66,7 @@ for _ in range(right - left):          # 每次把 cur 后面的节点移到段�
 return dummy.next
 ```
 
-**中点**
+### 中点
 
 ```python
 slow = fast = head
@@ -75,7 +75,7 @@ while fast and fast.next:              # 偶数个节点时停在后一个中点
 # 要停在前一个中点（之后断开）：while fast.next and fast.next.next
 ```
 
-**倒数第 k 个**
+### 倒数第 k 个
 
 ```python
 dummy = ListNode(0, head)
@@ -86,7 +86,7 @@ while fast.next:
 # slow 是倒数第 k 个节点的前驱；删除：slow.next = slow.next.next
 ```
 
-**环与入环点**
+### 环与入环点
 
 ```python
 slow = fast = head
@@ -100,8 +100,11 @@ while fast and fast.next:
 return None
 ```
 
-**检查清单**
+### 检查清单
 
-- 空链表、只有一个节点、只有两个节点各走一遍。
+- 改 `x.next` 之前，原来的下一个节点是否已保存。
+- 访问 `x.next.next` 之前，`x.next` 是否可能为 `None`。
+- 删除 `prev.next` 之后，`prev` 不前进。
 - 拆成两段后，前一段的末尾是否置为 `None`。
 - 返回的是 `dummy.next` 还是已经失效的 `head`。
+- 空链表、只有一个节点、只有两个节点各走一遍。

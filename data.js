@@ -1,6 +1,6 @@
 // 题库。一个类型一项；有 groups 的类型才有页面，其余在总览里显示为“未开始”。
 // 题目：[题号, 标题, leetcode.com 的 slug, 难度, 一句话要点]
-// 加一个类型：在这里补 groups，再写 topics/<slug>/article.md 与 cheatsheet.md；有视频就把成片放到 media/ 并填 video。
+// 加一个类型：在这里补 groups，再写 topics/<slug>/cheatsheet.md；有视频就把成片放到 media/ 并填 video。
 window.TOPICS = [
   { slug: "array-two-pointers", title: "数组与双指针", kind: "algo" },
   { slug: "sliding-window", title: "滑动窗口", kind: "algo" },
