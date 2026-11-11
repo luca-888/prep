@@ -1,0 +1,104 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s06 组合（重排链表）：目标顺序 → 快慢指针找中点 → 断开并反转后半 → 交替改接 → 排成一行，“先保存，再修改” -->
+  <div id="root" data-composition-id="s06" data-width="1920" data-height="1080">
+    <div id="s06-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s06;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s06-stage"), tl, DUR);
+
+      L.header("组合", "三个手法拼成一道题");
+      const Y = 320, Y2 = 540, X = [440, 680, 920, 1160, 1400];
+      const N = [1, 2, 3, 4, 5].map((v, i) => L.node(v, X[i], Y));
+      const NONE = L.node("None", 1605, Y, { kind: "none" });
+      const A = N.map((n, i) => L.arrow(n, i < 4 ? N[i + 1] : NONE));
+
+      // 右上角三个步骤
+      const steps = ["找中点", "反转后半", "交替合并"].map((s, i) => {
+        const e = L.div(L.ui, `position:absolute;right:${96 + (2 - i) * 212}px;top:58px;width:196px;text-align:center;padding:6px 0 8px;border:4px solid var(--gray);border-radius:4px;font-size:34px;font-weight:800;color:var(--note);white-space:nowrap`, s);
+        gsap.set(e, { opacity: 0 });
+        L.ft(e, { opacity: 0 }, { opacity: 1, duration: 0.3 }, B[1] - 0.6 + i * 0.12);
+        return e;
+      });
+      const lit = (i, t) => L.ft(steps[i], { backgroundColor: "rgba(11,125,112,0)", borderColor: "#8a8474", color: "#6b6556" }, { backgroundColor: "rgba(11,125,112,1)", borderColor: "#0b7d70", color: "#ffffff", duration: 0.3 }, t);
+
+      // —— 第 1 句：按 1、5、2、4、3 的次序闪亮，下方排出目标顺序 ——
+      N.forEach((n, i) => { n.show(0.02 + i * 0.1); A[i].draw(0.25 + i * 0.1); });
+      NONE.show(0.6);
+      const src = L.src("LeetCode 143 · 重排链表", B[0] + 0.6);
+      N.forEach((n, i) => n.pulse(B[0] + 1.9 + i * 0.5, 1.1));
+      const ORD = [0, 4, 1, 3, 2];
+      const G = ORD.map((ni, k) => {
+        const g = L.node(ni + 1, X[k], Y2, { kind: "dummy", fs: 54 });
+        const t = B[0] + 4.6 + k * 0.5;
+        N[ni].fill("tealL", t, 0.2); N[ni].fill("white", t + 0.9, 0.3);
+        g.x.to(X[ni], t, 0); g.y.to(Y, t, 0); g.show(t + 0.01, 0.3); g.move(X[k], Y2, t + 0.02, 0.55);
+        return g;
+      });
+      G.forEach((g) => g.hide(B[1] - 0.3));
+      L.ft(src, { opacity: 1 }, { opacity: 0, duration: 0.3 }, B[1] - 0.8);
+
+      // —— 第 2 句：快慢指针找中点 ——
+      lit(0, B[1] + 0.2);
+      const slow = L.tag("slow", "blue", N[0]).show(B[1] + 0.3);
+      const fast = L.tag("fast", "hot", N[0], { lvl: 1 }).show(B[1] + 0.4);
+      [[1, 2], [2, 4]].forEach(([s, f], k) => {
+        const t = B[1] + 1.1 + k * 0.9;
+        slow.move(N[s], t, 0.4); fast.move(N[f - 1], t + 0.1, 0.25, "power1.in"); fast.move(N[f], t + 0.35, 0.25, "power1.out");
+      });
+      N[2].fill("tealL", B[1] + 2.9);
+
+      // —— 第 3 句：断开，后半段下移并反转 ——
+      lit(1, B[2] + 0.2);
+      slow.hide(B[2] + 0.1); fast.hide(B[2] + 0.1);
+      N[3].move(null, Y2, B[2] + 0.5, 0.9); N[4].move(null, Y2, B[2] + 0.5, 0.9); NONE.move(null, Y2, B[2] + 0.5, 0.9);
+      const NB = L.node("None", X[3] - 20, Y, { kind: "none" }).show(B[2] + 1.3);
+      A[2].color("hot", B[2] + 0.5).retarget(NB, B[2] + 0.6, 0.8).color("ink", B[2] + 1.6, 0.3);
+      N[2].fill("white", B[2] + 1.6);
+      // 反转 4 → 5：4 指向左侧的 None，5 指向 4
+      const NL = L.node("None", X[3] - 215, Y2, { kind: "none" }).show(B[2] + 2.3);
+      A[3].color("teal", B[2] + 2.5).retarget(NL, B[2] + 2.6, 0.6).color("ink", B[2] + 3.3, 0.3);
+      A[4].color("teal", B[2] + 3.3).retarget(N[3], B[2] + 3.4, 0.6).color("ink", B[2] + 4.1, 0.3);
+      NONE.hide(B[2] + 3.3);
+      // 换位：读作 5 → 4 → None
+      const sw = B[2] + 4.4;
+      N[4].move(560, null, sw, 1.1); N[4].y.to(Y2 + 130, sw, 0.55, "power1.out"); N[4].y.to(Y2, sw + 0.55, 0.55, "power1.in");
+      N[3].move(800, null, sw, 1.1);
+      NL.move(1025, null, sw, 1.1);
+
+      // —— 第 4 句：交替改接，再排成一行 ——
+      lit(2, B[3] + 0.2);
+      const p1 = L.tag("p1", "blue", N[0], { side: -1 }).show(B[3] + 0.4);
+      const p2 = L.tag("p2", "hot", N[4]).show(B[3] + 0.5);
+      const ts = B[3] + 1.0;
+      const link = (a, to, t) => a.color("teal", t, 0.1).retarget(to, t + 0.05, 0.6).color("ink", t + 0.75, 0.25);
+      link(A[0], N[4], ts);
+      link(A[4], N[1], ts + 0.9);
+      p1.move(N[1], ts + 1.6, 0.4); p2.move(N[3], ts + 1.6, 0.4);
+      link(A[1], N[3], ts + 2.1);
+      link(A[3], N[2], ts + 3.0);
+      NL.hide(ts + 3.0);
+      p1.hide(ts + 3.8); p2.hide(ts + 3.8);
+      const ft = ts + 4.2;
+      [N[0], N[4], N[1], N[3], N[2]].forEach((n, k) => n.move(X[k], Y + 60, ft, 1.1));
+      NB.move(1605, Y + 60, ft, 1.1);
+
+      // —— 第 5 句：三个步骤跳动，箭头依次闪亮，“先保存，再修改” ——
+      steps.forEach((e, i) => {
+        L.ft(e, { scale: 1 }, { scale: 1.1, duration: 0.2, ease: "power2.out" }, B[4] + 0.3 + i * 0.55);
+        L.ft(e, { scale: 1.1 }, { scale: 1, duration: 0.3, ease: "power2.inOut" }, B[4] + 0.5 + i * 0.55);
+      });
+      [A[0], A[4], A[1], A[3], A[2]].forEach((a, i) => a.flash("teal", B[4] + 2.2 + i * 0.3, 0.35));
+      L.key('先<span class="acc">保存</span>，再<span class="acc-o">修改</span>', 690, B[4] + 4.0);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s06"] = tl;
+    })();
+  </script>
+</template>

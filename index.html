@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>prep</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="#/">prep</a>
+      <nav>
+        <a href="#/">总览</a>
+        <a href="#/problems">题目</a>
+        <a href="#/cheatsheet">Cheatsheet</a>
+      </nav>
+      <span class="grow"></span>
+      <button id="export">导出进度</button>
+      <button id="import">导入进度</button>
+      <input id="file" type="file" accept="application/json" hidden />
+    </header>
+    <main id="app"></main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

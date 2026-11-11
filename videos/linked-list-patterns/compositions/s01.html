@@ -1,0 +1,76 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s01 链表是什么：数组的一排格子 → 拆散成节点 → 箭头逐根接上 → 排成一行，cur 从 head 逐个走 → 一根箭头绕过一个节点，其余不动 -->
+  <div id="root" data-composition-id="s01" data-width="1920" data-height="1080">
+    <div id="s01-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s01;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s01-stage"), tl, DUR);
+      L.header("链表", "节点与 next 指针", 0);
+
+      const VAL = [3, 7, 1, 9, 4], Y = 470;
+      const AX = (i) => 960 + (i - 2) * 150;          // 数组：格子相连
+      const SX = (i) => 960 + (i - 2) * 250 - 70;     // 链表：拉开间距
+      const SY = [430, 580, 370, 600, 450];
+      const N = VAL.map((v, i) => L.node(v, AX(i), Y, { o: 1 }));
+      const NONE = L.node("None", SX(4) + 220, SY[4], { kind: "none" });
+      const A = N.map((n, i) => L.arrow(n, i < 4 ? N[i + 1] : NONE));
+
+      // —— 第 1 句：下标出现，a[3] 直接点亮 ——
+      const idx = VAL.map((_, i) => L.label(String(i), AX(i), Y + 100, "font-family:var(--mono);font-size:40px;color:var(--note)"));
+      idx.forEach((l, i) => l.show(B[0] + 0.3 + i * 0.12));
+      const acc = L.label("a[3]", AX(3), Y - 120, "font-family:var(--mono);font-size:48px;font-weight:800;color:var(--tealD)");
+      acc.show(B[0] + 2.7);
+      N[3].fill("tealL", B[0] + 2.9).pulse(B[0] + 2.9, 1.08);
+      L.ft(idx[3].el, { color: "#6b6556", scale: 1 }, { color: "#0b7d70", scale: 1.3, duration: 0.3 }, B[0] + 2.7);
+      acc.hide(B[1] - 0.3);
+      N[3].fill("white", B[1] - 0.3);
+
+      // —— 第 2 句：格子拆开、散到各处；第一个节点伸出 next ——
+      idx.forEach((l) => l.hide(B[1] + 0.1));
+      N.forEach((n, i) => n.move(SX(i), SY[i], B[1] + 0.4 + i * 0.08, 1.2));
+      const lv = L.label("val", SX(0), SY[0] - 100, "font-family:var(--mono);font-size:38px;font-weight:800;color:var(--tealD)");
+      const ln = L.label("next", (SX(0) + SX(1)) / 2 + 40, (SY[0] + SY[1]) / 2 - 50, "font-family:var(--mono);font-size:38px;font-weight:800;color:var(--hot-t)");
+      lv.show(B[1] + 3.0); N[0].fill("tealL", B[1] + 3.0);
+      A[0].draw(B[1] + 4.3, 0.5).flash("hot", B[1] + 4.3, 1.4);
+      ln.show(B[1] + 4.5);
+
+      // —— 第 3 句：其余箭头依次画出，末尾接 None ——
+      N[0].fill("white", B[2] + 0.1);
+      [1, 2, 3].forEach((i, k) => A[i].draw(B[2] + 0.4 + k * 0.5, 0.4));
+      NONE.show(B[2] + 2.7);
+      A[4].draw(B[2] + 3.0, 0.4);
+
+      // —— 第 4 句：排成一行；head 落在第一个节点，cur 逐个向后走 ——
+      lv.hide(B[3]); ln.hide(B[3]);
+      N.forEach((n, i) => n.move(null, Y, B[3] + 0.2, 0.9));
+      NONE.move(null, Y, B[3] + 0.2, 0.9);
+      const head = L.tag("head", "ink", N[0], { side: -1 }).show(B[3] + 1.2);
+      const cur = L.tag("cur", "teal", N[0]).show(B[3] + 1.9);
+      [1, 2, 3].forEach((i, k) => {
+        const t = B[3] + 2.9 + k * 0.95;
+        cur.move(N[i], t, 0.55);
+        A[i - 1].flash("teal", t, 0.5);
+      });
+      N[3].fill("tealL", B[3] + 2.9 + 2 * 0.95 + 0.5);
+
+      // —— 第 5 句：一根箭头绕过一个节点，该节点落下；其他节点不动 ——
+      cur.hide(B[4] + 0.1); head.hide(B[4] + 0.1);
+      N[3].fill("white", B[4] + 0.1);
+      N[2].fill("hotL", B[4] + 0.6);
+      A[1].color("hot", B[4] + 1.6).retarget(N[3], B[4] + 1.7, 0.9, 95);
+      A[1].color("ink", B[4] + 2.9, 0.4);
+      N[2].move(null, Y + 170, B[4] + 3.1, 0.7, "power2.in").hide(B[4] + 3.2, 0.5);
+      A[1].arc(0, B[4] + 3.9, 0.6);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s01"] = tl;
+    })();
+  </script>
+</template>

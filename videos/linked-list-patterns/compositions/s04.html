@@ -1,0 +1,79 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s04 反转：prev / cur 落位 → nxt 保存下一个 → cur.next 掉头 → 两个指针前进 → 四行循环三轮 → prev 即新的头 -->
+  <div id="root" data-composition-id="s04" data-width="1920" data-height="1080">
+    <div id="s04-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s04;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s04-stage"), tl, DUR);
+
+      L.header("手法 2", "反转：逐根掉转箭头");
+      const src = L.src("LeetCode 206", B[0] + 0.6);
+      const Y = 320, X = [590, 850, 1110, 1370];
+      const NL = L.node("None", 345, Y, { kind: "none" });
+      const N = [1, 2, 3, 4].map((v, i) => L.node(v, X[i], Y));
+      const NR = L.node("None", 1600, Y, { kind: "none" });
+      const A = N.map((n, i) => L.arrow(n, i < 3 ? N[i + 1] : NR));
+      const at = (i) => (i < 0 ? NL : i > 3 ? NR : N[i]);
+
+      // —— 第 1 句 ——
+      N.forEach((n, i) => { n.show(0.02 + i * 0.1); A[i].draw(0.25 + i * 0.1); });
+      NR.show(0.6);
+      A.forEach((a, i) => a.flash("hot", B[0] + 2.2 + i * 0.35, 0.4));
+
+      // —— 第 2 句：prev 在左侧的 None，cur 在头节点 ——
+      NL.show(B[1] + 2.5);
+      const prev = L.tag("prev", "blue", NL, { side: -1 }).show(B[1] + 2.8);
+      const cur = L.tag("cur", "teal", N[0]).show(B[1] + 4.7);
+
+      // —— 第 3 句：nxt 保存下一个节点 ——
+      const code = L.code(["nxt = cur.next", "cur.next = prev", "prev = cur", "cur = nxt"], { y: 610, w: 460 });
+      code.show(B[2] + 0.2).line(0, B[2] + 0.3).hl(0, B[2] + 1.6);
+      const nxt = L.tag("nxt", "hot", N[1], { side: -1 }).show(B[2] + 2.0);
+      [1, 2, 3].forEach((i) => { N[i].dim(0.35, B[2] + 4.3, 0.4); N[i].dim(1, B[2] + 5.1, 0.4); });
+      NR.dim(0.35, B[2] + 4.3, 0.4).dim(1, B[2] + 5.1, 0.4);
+
+      // —— 第 4 句：cur.next 指向 prev ——
+      code.line(1, B[3] + 0.1).hl(1, B[3] + 0.4);
+      A[0].color("teal", B[3] + 0.8).retarget(NL, B[3] + 0.9, 0.9).color("ink", B[3] + 2.0, 0.3);
+
+      // —— 第 5 句：prev、cur 各前进一步 ——
+      code.line([2, 3], B[4] + 0.1).hl(2, B[4] + 0.4);
+      prev.move(N[0], B[4] + 0.5, 0.5);
+      code.hl(3, B[4] + 1.4);
+      cur.move(N[1], B[4] + 1.5, 0.5);
+
+      // —— 第 6 句：重复三轮 ——
+      const IT = 1.8;
+      [1, 2, 3].forEach((i, k) => {
+        const t = B[5] + 0.7 + k * IT;
+        code.hl(0, t); nxt.move(at(i + 1), t + 0.05, 0.35);
+        code.hl(1, t + 0.45); A[i].color("teal", t + 0.45, 0.1).retarget(at(i - 1), t + 0.5, 0.45).color("ink", t + 1.0, 0.25);
+        code.hl(2, t + 0.9); prev.move(at(i), t + 0.95, 0.35);
+        code.hl(3, t + 1.35); cur.move(at(i + 1), t + 1.4, 0.35);
+      });
+      code.hlOff(B[5] + 0.7 + 3 * IT + 0.1);
+
+      // —— 第 7 句：prev 即新的头 ——
+      cur.hide(B[6] + 0.1); nxt.hide(B[6] + 0.1); NR.hide(B[6] + 0.2);
+      const head = L.tag("head", "ink", N[3], { side: -1, lvl: 1 }).show(B[6] + 0.7);
+      N[3].fill("tealL", B[6] + 0.7);
+
+      // —— 第 8 句：题号补上 92 与 25，代码框跳动 ——
+      L.ft(src, { opacity: 1 }, { opacity: 0, duration: 0.3 }, B[7] + 0.3);
+      L.src("LeetCode 206 · 92 · 25", B[7] + 0.6);
+      L.ft(code.el, { scale: 1 }, { scale: 1.06, duration: 0.25, ease: "power2.out" }, B[7] + 3.4);
+      L.ft(code.el, { scale: 1.06 }, { scale: 1, duration: 0.4, ease: "power2.inOut" }, B[7] + 3.65);
+      [0, 1, 2, 3].forEach((i) => code.hl(i, B[7] + 3.4 + i * 0.3));
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s04"] = tl;
+    })();
+  </script>
+</template>

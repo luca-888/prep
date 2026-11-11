@@ -1,0 +1,107 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s05 快慢指针：找中点（一步 / 两步）→ 倒数第 k 个（先走 k 步，带着跨度同速）→ 判环（箭头拱回，fast 追上 slow） -->
+  <div id="root" data-composition-id="s05" data-width="1920" data-height="1080">
+    <div id="s05-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s05;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s05-stage"), tl, DUR);
+
+      L.header("手法 3", "快慢指针：用速度差定位");
+      const src = L.src("LeetCode 876", B[0] + 0.6);
+      const Y = 300, X = [420, 660, 900, 1140, 1380];
+      const N = [1, 2, 3, 4, 5].map((v, i) => L.node(v, X[i], Y));
+      const NONE = L.node("None", 1600, Y, { kind: "none" });
+      const A = N.map((n, i) => L.arrow(n, i < 4 ? N[i + 1] : NONE));
+      const at = (i) => (i > 4 ? NONE : N[i]);
+
+      // —— 第 1 句：中点在哪；两个指针落在头节点 ——
+      N.forEach((n, i) => { n.show(0.02 + i * 0.1); A[i].draw(0.25 + i * 0.1); });
+      NONE.show(0.6);
+      const q = L.label("中点？", X[2], Y - 115, "font-size:40px;font-weight:800;color:var(--hot-t)");
+      q.show(B[0] + 3.4);
+      const slow = L.tag("slow", "blue", N[0]).show(B[0] + 5.2);
+      const fast = L.tag("fast", "hot", N[0], { lvl: 1 }).show(B[0] + 5.5);
+
+      // —— 第 2 句：slow 一步，fast 两步 ——
+      const cA = L.code(["while fast and fast.next:", "    slow = slow.next", "    fast = fast.next.next"], { y: 630, w: 680 });
+      cA.show(B[1] + 0.2).line([0, 1, 2], B[1] + 0.3);
+      let ts = B[1] + 1.3;
+      [[1, 2], [2, 4]].forEach(([s, f], k) => {
+        const t = ts + k * 1.6;
+        cA.hl(1, t); slow.move(at(s), t + 0.05, 0.4);
+        cA.hl(2, t + 0.6); fast.move(at(f - 1), t + 0.65, 0.3, "power1.in"); fast.move(at(f), t + 0.95, 0.3, "power1.out");
+      });
+      cA.hl(0, ts + 3.3);
+      q.hide(ts + 3.5);
+      N[2].fill("tealL", ts + 3.7).pulse(ts + 3.7);
+      cA.hlOff(ts + 4.6);
+
+      // —— 第 3 句：倒数第 k 个 —— fast 先走 k = 2 步 ——
+      cA.leave(B[2]);
+      N[2].fill("white", B[2] + 0.1);
+      L.ft(src, { opacity: 1 }, { opacity: 0, duration: 0.3 }, B[2] + 0.1);
+      const src2 = L.src("LeetCode 19", B[2] + 0.4);
+      slow.move(N[0], B[2] + 0.3, 0.6); fast.move(N[0], B[2] + 0.3, 0.6);
+      const cB = L.code(["for _ in range(k):", "    fast = fast.next", "while fast:", "    slow, fast = slow.next, fast.next"], { y: 610, w: 950 });
+      cB.show(B[2] + 1.0).line([0, 1], B[2] + 1.1).hl(1, B[2] + 2.6);
+      fast.move(N[1], B[2] + 2.7, 0.4); fast.move(N[2], B[2] + 3.3, 0.4);
+      // 跨度：slow 与 fast 之间
+      const span = L.div(L.stage, "position:absolute;left:0;top:0;height:16px;border:5px solid var(--hot);border-bottom:none;border-radius:3px 3px 0 0;opacity:0");
+      const spanL = L.div(L.stage, "position:absolute;left:0;top:0;font-family:var(--mono);font-size:38px;font-weight:800;color:var(--hot-t);white-space:nowrap;opacity:0", "k = 2");
+      const so = L.track(0);
+      so.to(1, B[2] + 4.3, 0.4);
+      L.custom((t) => {
+        const x1 = slow.x(t), x2 = fast.x(t), o = so.at(t);
+        span.style.opacity = o; spanL.style.opacity = o;
+        span.style.width = Math.max(0, x2 - x1) + "px";
+        span.style.transform = `translate(${x1}px,${Y - 95}px)`;
+        spanL.style.transform = `translate(${(x1 + x2) / 2}px,${Y - 150}px) translateX(-50%)`;
+      });
+
+      // —— 第 4 句：带着跨度同速前进，fast 落到 None ——
+      cB.line([2, 3], B[3] + 0.1).hl(3, B[3] + 0.6);
+      ts = B[3] + 1.0;
+      [[1, 3], [2, 4], [3, 5]].forEach(([s, f], k) => {
+        const t = ts + k * 0.9;
+        slow.move(at(s), t, 0.5); fast.move(at(f), t, 0.5);
+        if (k) cB.hl(3, t);
+      });
+      cB.hl(2, ts + 2.9).hlOff(ts + 3.6);
+      N[3].fill("tealL", ts + 3.1).pulse(ts + 3.1);
+
+      // —— 第 5 句：环 —— 最后一个节点的箭头拱回中间，fast 绕环追上 slow ——
+      cB.leave(B[4]); so.to(0, B[4], 0.3);
+      slow.hide(B[4] + 0.1); fast.hide(B[4] + 0.1);
+      N[3].fill("white", B[4] + 0.1);
+      L.ft(src2, { opacity: 1 }, { opacity: 0, duration: 0.3 }, B[4] + 0.1);
+      L.src("LeetCode 141", B[4] + 0.4);
+      NONE.hide(B[4] + 0.5);
+      A[4].color("hot", B[4] + 0.9).retarget(N[2], B[4] + 1.0, 1.0, 105).color("ink", B[4] + 2.4, 0.4);
+      slow.move(N[0], B[4] + 0.5, 0.01).show(B[4] + 2.3); fast.move(N[0], B[4] + 0.5, 0.01).show(B[4] + 2.5);
+      const cC = L.code(["slow = slow.next", "fast = fast.next.next", "if slow is fast: return True"], { y: 630, w: 750 });
+      cC.show(B[4] + 2.6).line([0, 1, 2], B[4] + 2.7);
+      ts = B[4] + 3.7;
+      const hop = [[1, [1, 2]], [2, [3, 4]], [3, [2, 3]]];
+      hop.forEach(([s, f], k) => {
+        const t = ts + k * 1.4;
+        cC.hl(0, t); slow.move(at(s), t + 0.05, 0.4);
+        cC.hl(1, t + 0.55); fast.move(at(f[0]), t + 0.6, 0.3, "power1.in"); fast.move(at(f[1]), t + 0.9, 0.3, "power1.out");
+      });
+      cC.hl(2, ts + 4.2);
+      N[3].fill("tealL", ts + 4.3);
+
+      // —— 第 6 句：相遇的节点跳动 ——
+      N[3].pulse(B[5] + 0.6, 1.16).pulse(B[5] + 1.6, 1.16);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s05"] = tl;
+    })();
+  </script>
+</template>

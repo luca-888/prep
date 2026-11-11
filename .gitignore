@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+*.local
+__pycache__/
+
+# 视频：缓存、渲染结果与付费配音只留在本地；成片在 media/
+/videos/*/.hyperframes/
+/videos/*/.thumbnails/
+/videos/*/.waveform-cache/
+/videos/*/renders/
+/videos/*/assets/vo/

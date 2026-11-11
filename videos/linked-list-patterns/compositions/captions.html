@@ -1,0 +1,64 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- 由 build.mjs 生成：改 narration.md 后重跑 -->
+  <div id="root" data-composition-id="captions" data-width="1920" data-height="1080" data-layout-allow-caption-zone>
+    <div id="cap-s01-0-0" class="clip kit-sub" data-start="0.60" data-duration="4.60" data-track-index="1"><span>数组占用一段连续的内存，按下标可以直接访问任意元素</span></div>
+    <div id="cap-s01-1-0" class="clip kit-sub" data-start="6.27" data-duration="2.12" data-track-index="1"><span>链表的节点分散在内存各处</span></div>
+    <div id="cap-s01-1-1" class="clip kit-sub" data-start="8.39" data-duration="3.00" data-track-index="1"><span>每个节点保存一个值和一个 next 指针</span></div>
+    <div id="cap-s01-2-0" class="clip kit-sub" data-start="12.73" data-duration="4.17" data-track-index="1"><span>next 指向下一个节点，最后一个节点的 next 为 None</span></div>
+    <div id="cap-s01-3-0" class="clip kit-sub" data-start="17.54" data-duration="4.23" data-track-index="1"><span>访问第 k 个节点，只能从 head 出发，沿 next 逐个向后走</span></div>
+    <div id="cap-s01-4-0" class="clip kit-sub" data-start="23.83" data-duration="4.88" data-track-index="1"><span>链表的插入和删除不需要移动其他元素，只需修改指针</span></div>
+    <div id="cap-s02-0-0" class="clip kit-sub" data-start="30.93" data-duration="4.01" data-track-index="1"><span>链表上的操作，最终都是修改某个节点的 next</span></div>
+    <div id="cap-s02-1-0" class="clip kit-sub" data-start="35.44" data-duration="3.31" data-track-index="1"><span>删除一个节点：让它前一个节点的 next 绕过它</span></div>
+    <div id="cap-s02-1-1" class="clip kit-sub" data-start="38.75" data-duration="1.82" data-track-index="1"><span>指向它的后一个节点</span></div>
+    <div id="cap-s02-2-0" class="clip kit-sub" data-start="43.41" data-duration="3.54" data-track-index="1"><span>插入一个节点需要改两根指针，顺序不能颠倒</span></div>
+    <div id="cap-s02-3-0" class="clip kit-sub" data-start="47.99" data-duration="4.46" data-track-index="1"><span>如果先让 prev 的 next 指向新节点，就没有指针指向后半段</span></div>
+    <div id="cap-s02-3-1" class="clip kit-sub" data-start="52.45" data-duration="1.56" data-track-index="1"><span>后半段无法找到</span></div>
+    <div id="cap-s02-4-0" class="clip kit-sub" data-start="56.64" data-duration="3.18" data-track-index="1"><span>正确的顺序是先让新节点指向后半段</span></div>
+    <div id="cap-s02-4-1" class="clip kit-sub" data-start="59.82" data-duration="1.95" data-track-index="1"><span>再让 prev 指向新节点</span></div>
+    <div id="cap-s02-5-0" class="clip kit-sub" data-start="63.25" data-duration="3.16" data-track-index="1"><span>这条规则贯穿所有链表题：修改指针之前</span></div>
+    <div id="cap-s02-5-1" class="clip kit-sub" data-start="66.42" data-duration="1.71" data-track-index="1"><span>先保存后面的节点</span></div>
+    <div id="cap-s03-0-0" class="clip kit-sub" data-start="70.79" data-duration="2.40" data-track-index="1"><span>删除节点要用到它的前一个节点</span></div>
+    <div id="cap-s03-0-1" class="clip kit-sub" data-start="73.19" data-duration="2.11" data-track-index="1"><span>而头节点没有前一个节点</span></div>
+    <div id="cap-s03-1-0" class="clip kit-sub" data-start="76.67" data-duration="4.72" data-track-index="1"><span>因此删除头节点需要单独处理，代码多出一个分支</span></div>
+    <div id="cap-s03-2-0" class="clip kit-sub" data-start="81.69" data-duration="2.28" data-track-index="1"><span>在头节点前面加一个哑节点 dummy</span></div>
+    <div id="cap-s03-2-1" class="clip kit-sub" data-start="83.97" data-duration="2.33" data-track-index="1"><span>每个节点便都有了前一个节点</span></div>
+    <div id="cap-s03-3-0" class="clip kit-sub" data-start="88.03" data-duration="3.95" data-track-index="1"><span>从 dummy 出发，用同一段循环处理所有节点</span></div>
+    <div id="cap-s03-4-0" class="clip kit-sub" data-start="97.80" data-duration="2.80" data-track-index="1"><span>最后返回 dummy 的 next，即新的头节点</span></div>
+    <div id="cap-s03-5-0" class="clip kit-sub" data-start="101.46" data-duration="4.39" data-track-index="1"><span>合并两个有序链表时，结果链表的头同样先用 dummy 占位</span></div>
+    <div id="cap-s04-0-0" class="clip kit-sub" data-start="107.79" data-duration="3.98" data-track-index="1"><span>反转链表，就是把每一根 next 指针掉转方向</span></div>
+    <div id="cap-s04-1-0" class="clip kit-sub" data-start="112.08" data-duration="6.49" data-track-index="1"><span>使用 prev 和 cur 两个指针：prev 初始为 None，cur 指向头节点</span></div>
+    <div id="cap-s04-2-0" class="clip kit-sub" data-start="118.80" data-duration="3.95" data-track-index="1"><span>掉转 cur 的指针之前，先用 nxt 保存下一个节点</span></div>
+    <div id="cap-s04-2-1" class="clip kit-sub" data-start="122.75" data-duration="1.93" data-track-index="1"><span>否则后半段会丢失</span></div>
+    <div id="cap-s04-3-0" class="clip kit-sub" data-start="125.02" data-duration="3.13" data-track-index="1"><span>然后让 cur 的 next 指向 prev</span></div>
+    <div id="cap-s04-4-0" class="clip kit-sub" data-start="128.37" data-duration="3.36" data-track-index="1"><span>最后 prev 和 cur 各前进一步</span></div>
+    <div id="cap-s04-5-0" class="clip kit-sub" data-start="131.95" data-duration="3.43" data-track-index="1"><span>重复这四行，直到 cur 为 None</span></div>
+    <div id="cap-s04-6-0" class="clip kit-sub" data-start="139.80" data-duration="2.90" data-track-index="1"><span>此时 prev 指向新的头节点</span></div>
+    <div id="cap-s04-7-0" class="clip kit-sub" data-start="142.92" data-duration="2.36" data-track-index="1"><span>反转链表的一段、K 个一组反转</span></div>
+    <div id="cap-s04-7-1" class="clip kit-sub" data-start="145.28" data-duration="2.77" data-track-index="1"><span>都是在这四行之外增加边界处理</span></div>
+    <div id="cap-s05-0-0" class="clip kit-sub" data-start="150.09" data-duration="3.87" data-track-index="1"><span>链表不能按下标访问，长度也未知；要找中点</span></div>
+    <div id="cap-s05-0-1" class="clip kit-sub" data-start="153.96" data-duration="3.45" data-track-index="1"><span>可以让两个指针以不同的速度前进</span></div>
+    <div id="cap-s05-1-0" class="clip kit-sub" data-start="157.71" data-duration="4.52" data-track-index="1"><span>slow 每次走一步，fast 每次走两步；fast 到达末尾时</span></div>
+    <div id="cap-s05-1-1" class="clip kit-sub" data-start="162.23" data-duration="1.51" data-track-index="1"><span>slow 停在中点</span></div>
+    <div id="cap-s05-2-0" class="clip kit-sub" data-start="165.16" data-duration="3.28" data-track-index="1"><span>找倒数第 k 个节点时，让 fast 先走 k 步</span></div>
+    <div id="cap-s05-2-1" class="clip kit-sub" data-start="168.45" data-duration="2.32" data-track-index="1"><span>再让两个指针同速前进</span></div>
+    <div id="cap-s05-3-0" class="clip kit-sub" data-start="171.20" data-duration="3.77" data-track-index="1"><span>两个指针的间隔始终是 k；fast 走出链表时</span></div>
+    <div id="cap-s05-3-1" class="clip kit-sub" data-start="174.97" data-duration="2.50" data-track-index="1"><span>slow 停在倒数第 k 个节点</span></div>
+    <div id="cap-s05-4-0" class="clip kit-sub" data-start="178.41" data-duration="2.77" data-track-index="1"><span>如果链表中有环，fast 不会走到末尾</span></div>
+    <div id="cap-s05-4-1" class="clip kit-sub" data-start="181.18" data-duration="2.43" data-track-index="1"><span>而是在环内从后面追上 slow</span></div>
+    <div id="cap-s05-5-0" class="clip kit-sub" data-start="187.19" data-duration="2.87" data-track-index="1"><span>两个指针相遇，即可判定存在环</span></div>
+    <div id="cap-s06-0-0" class="clip kit-sub" data-start="191.92" data-duration="5.78" data-track-index="1"><span>重排链表：把 1、2、3、4、5 排成 1、5、2、4、3</span></div>
+    <div id="cap-s06-0-1" class="clip kit-sub" data-start="197.70" data-duration="2.95" data-track-index="1"><span>即首尾交替取节点</span></div>
+    <div id="cap-s06-1-0" class="clip kit-sub" data-start="200.87" data-duration="2.53" data-track-index="1"><span>第一步，用快慢指针找到中点</span></div>
+    <div id="cap-s06-2-0" class="clip kit-sub" data-start="204.53" data-duration="3.83" data-track-index="1"><span>第二步，从中点之后断开，把后半段反转</span></div>
+    <div id="cap-s06-3-0" class="clip kit-sub" data-start="210.78" data-duration="3.26" data-track-index="1"><span>第三步，把两段交替合并；每接一个节点之前</span></div>
+    <div id="cap-s06-3-1" class="clip kit-sub" data-start="214.04" data-duration="1.80" data-track-index="1"><span>同样先保存它的 next</span></div>
+    <div id="cap-s06-4-0" class="clip kit-sub" data-start="218.43" data-duration="5.28" data-track-index="1"><span>找中点、反转、改指针：链表题大多是这几个动作的组合</span></div>
+  </div>
+  <script>
+    window.__timelines = window.__timelines || {};
+    window.__timelines["captions"] = gsap.timeline({ paused: true }).set({}, {}, 225.78);
+  </script>
+</template>
