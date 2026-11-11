@@ -1,0 +1,74 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- 由 build.mjs 生成：改 narration.md 后重跑 -->
+  <div id="root" data-composition-id="captions" data-width="1920" data-height="1080" data-layout-allow-caption-zone>
+    <div id="cap-s01-0-0" class="clip kit-sub" data-start="0.60" data-duration="2.39" data-track-index="1"><span>数组占用一段连续的内存</span></div>
+    <div id="cap-s01-0-1" class="clip kit-sub" data-start="2.99" data-duration="3.49" data-track-index="1"><span>按下标可以直接读写任意一个元素</span></div>
+    <div id="cap-s01-1-0" class="clip kit-sub" data-start="6.70" data-duration="3.04" data-track-index="1"><span>代价在删除：从中间删掉一个元素</span></div>
+    <div id="cap-s01-1-1" class="clip kit-sub" data-start="9.75" data-duration="3.05" data-track-index="1"><span>后面的元素都要向前移动一格</span></div>
+    <div id="cap-s01-2-0" class="clip kit-sub" data-start="13.82" data-duration="4.57" data-track-index="1"><span>删除 k 个元素要移动 k 轮，总的时间是 n 的平方</span></div>
+    <div id="cap-s01-3-0" class="clip kit-sub" data-start="18.62" data-duration="4.57" data-track-index="1"><span>双指针的做法是不移动元素：用两个下标标记位置</span></div>
+    <div id="cap-s01-3-1" class="clip kit-sub" data-start="23.18" data-duration="3.05" data-track-index="1"><span>每个元素只读一次，最多写一次</span></div>
+    <div id="cap-s01-4-0" class="clip kit-sub" data-start="27.06" data-duration="3.70" data-track-index="1"><span>两个指针怎么走，常用的有三种：同向、相向</span></div>
+    <div id="cap-s01-4-1" class="clip kit-sub" data-start="30.76" data-duration="2.62" data-track-index="1"><span>以及分别走在两个数组上</span></div>
+    <div id="cap-s02-0-0" class="clip kit-sub" data-start="35.25" data-duration="3.63" data-track-index="1"><span>原地删除所有等于 3 的元素：fast 负责读</span></div>
+    <div id="cap-s02-0-1" class="clip kit-sub" data-start="38.88" data-duration="2.76" data-track-index="1"><span>slow 指向下一个写入的位置</span></div>
+    <div id="cap-s02-1-0" class="clip kit-sub" data-start="41.87" data-duration="2.48" data-track-index="1"><span>fast 读到 3，跳过，slow 不动</span></div>
+    <div id="cap-s02-2-0" class="clip kit-sub" data-start="44.57" data-duration="3.84" data-track-index="1"><span>读到要保留的元素，就把它写到 slow 的位置</span></div>
+    <div id="cap-s02-2-1" class="clip kit-sub" data-start="48.41" data-duration="1.89" data-track-index="1"><span>然后 slow 前进一步</span></div>
+    <div id="cap-s02-3-0" class="clip kit-sub" data-start="51.53" data-duration="3.20" data-track-index="1"><span>重复这段循环，直到 fast 走完数组</span></div>
+    <div id="cap-s02-4-0" class="clip kit-sub" data-start="60.15" data-duration="5.30" data-track-index="1"><span>slow 左边始终是保留下来的元素，slow 的值就是新的长度</span></div>
+    <div id="cap-s02-5-0" class="clip kit-sub" data-start="66.48" data-duration="3.70" data-track-index="1"><span>有序数组去重、移动零，用的是同一段循环</span></div>
+    <div id="cap-s02-5-1" class="clip kit-sub" data-start="70.18" data-duration="2.18" data-track-index="1"><span>只是保留的条件不同</span></div>
+    <div id="cap-s03-0-0" class="clip kit-sub" data-start="73.43" data-duration="4.13" data-track-index="1"><span>在有序数组里找两个数，使它们的和等于 10</span></div>
+    <div id="cap-s03-0-1" class="clip kit-sub" data-start="77.56" data-duration="2.62" data-track-index="1"><span>逐对尝试需要 n 的平方次</span></div>
+    <div id="cap-s03-1-0" class="clip kit-sub" data-start="80.40" data-duration="4.13" data-track-index="1"><span>让两个指针从两端出发：左指针指向最小的数</span></div>
+    <div id="cap-s03-1-1" class="clip kit-sub" data-start="84.53" data-duration="2.18" data-track-index="1"><span>右指针指向最大的数</span></div>
+    <div id="cap-s03-2-0" class="clip kit-sub" data-start="86.94" data-duration="4.78" data-track-index="1"><span>和是 12，大于 10。11 与最小的数相加都超过目标</span></div>
+    <div id="cap-s03-2-1" class="clip kit-sub" data-start="91.72" data-duration="4.79" data-track-index="1"><span>与其他数相加只会更大，所以排除 11，右指针左移</span></div>
+    <div id="cap-s03-3-0" class="clip kit-sub" data-start="97.34" data-duration="4.78" data-track-index="1"><span>现在和是 9，小于 10。1 与剩下最大的数相加都不够</span></div>
+    <div id="cap-s03-3-1" class="clip kit-sub" data-start="102.12" data-duration="2.40" data-track-index="1"><span>所以排除 1，左指针右移</span></div>
+    <div id="cap-s03-4-0" class="clip kit-sub" data-start="105.34" data-duration="4.14" data-track-index="1"><span>每一步排除一个数，最多 n 步就能找到答案</span></div>
+    <div id="cap-s03-5-0" class="clip kit-sub" data-start="113.11" data-duration="3.26" data-track-index="1"><span>反转数组、判断回文、盛水最多的容器</span></div>
+    <div id="cap-s03-5-1" class="clip kit-sub" data-start="116.37" data-duration="3.27" data-track-index="1"><span>都是两个指针从两端向中间收缩</span></div>
+    <div id="cap-s04-0-0" class="clip kit-sub" data-start="120.71" data-duration="3.05" data-track-index="1"><span>三个数的和为 0：先把数组排序</span></div>
+    <div id="cap-s04-1-0" class="clip kit-sub" data-start="124.99" data-duration="3.91" data-track-index="1"><span>固定第一个数，问题变成在它右边找两个数</span></div>
+    <div id="cap-s04-1-1" class="clip kit-sub" data-start="128.90" data-duration="1.96" data-track-index="1"><span>和等于它的相反数</span></div>
+    <div id="cap-s04-2-0" class="clip kit-sub" data-start="131.09" data-duration="4.57" data-track-index="1"><span>这正是对撞指针：左右指针落在右边这一段的两端</span></div>
+    <div id="cap-s04-2-1" class="clip kit-sub" data-start="135.65" data-duration="1.31" data-track-index="1"><span>向中间收缩</span></div>
+    <div id="cap-s04-3-0" class="clip kit-sub" data-start="138.19" data-duration="3.70" data-track-index="1"><span>第一个数向右移动一格，右边重新对撞</span></div>
+    <div id="cap-s04-4-0" class="clip kit-sub" data-start="145.12" data-duration="2.17" data-track-index="1"><span>排序之后相同的数相邻</span></div>
+    <div id="cap-s04-4-1" class="clip kit-sub" data-start="147.29" data-duration="3.26" data-track-index="1"><span>指针遇到和上一个相同的数就跳过</span></div>
+    <div id="cap-s04-4-2" class="clip kit-sub" data-start="150.55" data-duration="3.27" data-track-index="1"><span>结果里便不会出现重复的三元组</span></div>
+    <div id="cap-s04-5-0" class="clip kit-sub" data-start="154.05" data-duration="3.48" data-track-index="1"><span>外层 n 次，内层对撞 n 步，一共 n 的平方</span></div>
+    <div id="cap-s04-5-1" class="clip kit-sub" data-start="157.53" data-duration="2.62" data-track-index="1"><span>四数之和再多固定一个数</span></div>
+    <div id="cap-s05-0-0" class="clip kit-sub" data-start="161.22" data-duration="3.48" data-track-index="1"><span>把两个有序数组合并到第一个数组里</span></div>
+    <div id="cap-s05-0-1" class="clip kit-sub" data-start="164.70" data-duration="2.62" data-track-index="1"><span>它的末尾留着足够的空位</span></div>
+    <div id="cap-s05-1-0" class="clip kit-sub" data-start="167.54" data-duration="4.57" data-track-index="1"><span>如果从前往后写，写入的位置上还有没读过的元素</span></div>
+    <div id="cap-s05-1-1" class="clip kit-sub" data-start="172.10" data-duration="1.09" data-track-index="1"><span>会被覆盖</span></div>
+    <div id="cap-s05-2-0" class="clip kit-sub" data-start="174.02" data-duration="4.57" data-track-index="1"><span>末尾是空的，所以从后往前写：每个数组一个读指针</span></div>
+    <div id="cap-s05-2-1" class="clip kit-sub" data-start="178.59" data-duration="3.92" data-track-index="1"><span>都从最后一个元素出发，写指针指向末尾</span></div>
+    <div id="cap-s05-3-0" class="clip kit-sub" data-start="182.74" data-duration="4.57" data-track-index="1"><span>比较两个读指针指向的元素，较大的一个写到末尾</span></div>
+    <div id="cap-s05-3-1" class="clip kit-sub" data-start="187.30" data-duration="3.05" data-track-index="1"><span>它的读指针和写指针各退一步</span></div>
+    <div id="cap-s05-4-0" class="clip kit-sub" data-start="191.18" data-duration="5.23" data-track-index="1"><span>写指针始终在读指针的后面，没读过的元素不会被覆盖</span></div>
+    <div id="cap-s05-5-0" class="clip kit-sub" data-start="200.23" data-duration="2.61" data-track-index="1"><span>第二个数组用完就可以结束</span></div>
+    <div id="cap-s05-5-1" class="clip kit-sub" data-start="202.84" data-duration="4.36" data-track-index="1"><span>第一个数组剩下的元素已经在正确的位置上</span></div>
+    <div id="cap-s05-6-0" class="clip kit-sub" data-start="207.42" data-duration="5.00" data-track-index="1"><span>判断子序列、求两个数组的交集，也是每个数组一个指针</span></div>
+    <div id="cap-s05-6-1" class="clip kit-sub" data-start="212.42" data-duration="1.09" data-track-index="1"><span>各走各的</span></div>
+    <div id="cap-s06-0-0" class="clip kit-sub" data-start="214.59" data-duration="5.01" data-track-index="1"><span>颜色分类：数组里只有 0、1、2，要求只遍历一次就排好</span></div>
+    <div id="cap-s06-1-0" class="clip kit-sub" data-start="219.82" data-duration="4.13" data-track-index="1"><span>把数组分成三段：左边放 0，右边放 2，中间放 1</span></div>
+    <div id="cap-s06-1-1" class="clip kit-sub" data-start="223.95" data-duration="2.83" data-track-index="1"><span>左右两条边界各用一个指针</span></div>
+    <div id="cap-s06-2-0" class="clip kit-sub" data-start="227.01" data-duration="4.78" data-track-index="1"><span>第三个指针从左向右读：读到 0，与左边界交换；读到 2</span></div>
+    <div id="cap-s06-2-1" class="clip kit-sub" data-start="231.79" data-duration="3.05" data-track-index="1"><span>与右边界交换；读到 1，直接前进</span></div>
+    <div id="cap-s06-3-0" class="clip kit-sub" data-start="235.07" data-duration="5.44" data-track-index="1"><span>从右边换过来的元素还没有读过，所以这时读指针不前进</span></div>
+    <div id="cap-s06-4-0" class="clip kit-sub" data-start="241.54" data-duration="3.49" data-track-index="1"><span>读指针越过右边界时，三段都已排好</span></div>
+    <div id="cap-s06-5-0" class="clip kit-sub" data-start="250.85" data-duration="4.78" data-track-index="1"><span>读写指针划出已经处理的部分，对撞指针从两端收缩</span></div>
+    <div id="cap-s06-5-1" class="clip kit-sub" data-start="255.63" data-duration="3.49" data-track-index="1"><span>指针的一侧，始终是已经确定的元素</span></div>
+  </div>
+  <script>
+    window.__timelines = window.__timelines || {};
+    window.__timelines["captions"] = gsap.timeline({ paused: true }).set({}, {}, 261.19);
+  </script>
+</template>

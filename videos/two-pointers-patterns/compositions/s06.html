@@ -1,0 +1,70 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s06 颜色分类（LeetCode 75）：三段区间、lo 与 hi 两条边界 → i 从左向右读，三条规则 → 从右边换来的还没读，i 不动 → 走完 → 指针的一侧是已确定的部分 -->
+  <div id="root" data-composition-id="s06" data-width="1920" data-height="1080">
+    <div id="s06-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s06;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s06-stage"), tl, DUR);
+      const X = (i) => 960 + (i - 2.5) * 146;       // 六个格子相连，边框重叠 4 px
+
+      L.header("组合", "三个指针，三段区间");
+      const src = L.src("LeetCode 75 · 颜色分类", B[0] + 0.6);
+      const VAL = [2, 0, 1, 2, 0, 1], Y = 310, COL = ["hotL", "white", "blueL"];
+      const pos = VAL.map((v, i) => L.node(v, X(i), Y));     // pos[i]：当前在下标 i 的格子
+      const P = VAL.map((_, i) => L.slot(X(i), Y));
+
+      // —— 第 1 句：按值上色 ——
+      pos.forEach((n, i) => n.show(0.02 + i * 0.08));
+      pos.forEach((n, i) => n.fill(COL[VAL[i]], B[0] + 2.2 + VAL[i] * 0.45));
+
+      // —— 第 2 句：左右两条边界 ——
+      const lo = L.tag("lo", "hot", P[0], { side: -1 }).show(B[1] + 4.6);
+      const hi = L.tag("hi", "blue", P[5], { side: -1 }).show(B[1] + 5.4);
+
+      // —— 第 3 句：读指针与三条规则 ——
+      const pi = L.tag("i", "teal", P[0]).show(B[2] + 0.8);
+      const code = L.code(["读到 0：与 lo 交换，lo、i 前进", "读到 2：与 hi 交换，hi 后退", "读到 1：i 前进"], { y: 650, w: 760 });
+      code.show(B[2] + 2.4).line(0, B[2] + 2.6).line(1, B[2] + 4.4).line(2, B[2] + 6.3);
+
+      const swap = (a, b, t) => {
+        const na = pos[a], nb = pos[b];
+        na.z(3, t); nb.z(2, t);
+        na.x.to(X(b), t, 0.7); na.y.to(Y - 80, t, 0.35, "power1.out"); na.y.to(Y, t + 0.35, 0.35, "power1.in");
+        nb.x.to(X(a), t, 0.7); nb.y.to(Y + 80, t, 0.35, "power1.out"); nb.y.to(Y, t + 0.35, 0.35, "power1.in");
+        na.z(0, t + 0.75); nb.z(0, t + 0.75);
+        pos[a] = nb; pos[b] = na;
+      };
+
+      // —— 第 4 句：读到 2，与 hi 交换；换来的 1 还没读，i 不动 ——
+      code.hl(1, B[3] + 0.4);
+      swap(0, 5, B[3] + 1.0);
+      hi.move(P[4], B[3] + 2.0, 0.4);
+      pos[0].pulse(B[3] + 3.6, 1.12).pulse(B[3] + 4.6, 1.12);
+
+      // —— 第 5 句：其余五步 ——
+      const ts = B[4] + 0.3, ST = 1.5;
+      code.hl(2, ts); pi.move(P[1], ts + 0.4, 0.4);                                             // 1：前进
+      code.hl(0, ts + ST); swap(0, 1, ts + ST + 0.3); lo.move(P[1], ts + ST + 1.0, 0.35); pi.move(P[2], ts + ST + 1.0, 0.35);   // 0：与 lo 交换
+      code.hl(2, ts + 2 * ST + 0.1); pi.move(P[3], ts + 2 * ST + 0.5, 0.4);                     // 1：前进
+      code.hl(1, ts + 3 * ST); swap(3, 4, ts + 3 * ST + 0.3); hi.move(P[3], ts + 3 * ST + 1.0, 0.35);                           // 2：与 hi 交换
+      code.hl(0, ts + 4 * ST); swap(1, 3, ts + 4 * ST + 0.3); lo.move(P[2], ts + 4 * ST + 1.0, 0.35); pi.move(P[4], ts + 4 * ST + 1.0, 0.35);   // 0：与 lo 交换
+      code.hlOff(ts + 5 * ST + 0.4);
+
+      // —— 第 6 句：指针的一侧，是已确定的部分 ——
+      code.leave(B[5] + 0.2);
+      [[0, 1], [2, 3], [4, 5]].forEach((grp, k) => grp.forEach((i) => pos[i].pulse(B[5] + 1.0 + k * 0.6, 1.1)));
+      lo.hide(B[5] + 5.6); hi.hide(B[5] + 5.6); pi.hide(B[5] + 5.6);
+      L.key('指针的一侧，是<span class="acc">已确定</span>的部分', 680, B[5] + 6.4);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s06"] = tl;
+    })();
+  </script>
+</template>

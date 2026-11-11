@@ -2,7 +2,7 @@
 importScripts("https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js");
 const ready = (async () => {
   const py = await loadPyodide();
-  py.runPython(await (await fetch("harness.py?v=1")).text());
+  py.runPython(await (await fetch("harness.py?v=2")).text());
   postMessage({ ready: true });
   return py;
 })();

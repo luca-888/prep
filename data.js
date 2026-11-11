@@ -2,7 +2,44 @@
 // 题目：[题号, 标题, leetcode.com 的 slug, 难度, 一句话要点]
 // 加一个类型：在这里补 groups，再写 topics/<slug>/cheatsheet.md；有视频就把成片放到 media/ 并填 video。
 window.TOPICS = [
-  { slug: "array-two-pointers", title: "数组与双指针", kind: "algo" },
+  {
+    slug: "array-two-pointers", title: "数组与双指针", kind: "algo",
+    video: "media/two-pointers-patterns.mp4",
+    groups: [
+      { name: "基本动作：读写指针", problems: [
+        [27, "Remove Element", "remove-element", "Easy", "fast 读、slow 写：不等于 val 才写入，slow 即新长度"],
+        [26, "Remove Duplicates from Sorted Array", "remove-duplicates-from-sorted-array", "Easy", "与已写入的最后一个 nums[slow - 1] 不同才写入"],
+        [80, "Remove Duplicates from Sorted Array II", "remove-duplicates-from-sorted-array-ii", "Medium", "每个值最多留两个：与 nums[slow - 2] 不同才写入"],
+        [283, "Move Zeroes", "move-zeroes", "Easy", "非零的与 nums[slow] 交换；slow 左边全是非零"],
+      ] },
+      { name: "手法 1：对撞指针", problems: [
+        [344, "Reverse String", "reverse-string", "Easy", "l、r 从两端向中间，交换后各走一步"],
+        [125, "Valid Palindrome", "valid-palindrome", "Easy", "两端各自跳过非字母数字的字符，再比较小写"],
+        [680, "Valid Palindrome II", "valid-palindrome-ii", "Easy", "第一次不相等时，试删左边或删右边，剩下的一段必须是回文"],
+        [167, "Two Sum II - Input Array Is Sorted", "two-sum-ii-input-array-is-sorted", "Medium", "和太大 r 左移，太小 l 右移；每步排除一个数"],
+        [11, "Container With Most Water", "container-with-most-water", "Medium", "移动较矮的一边：留着它，宽度变小，面积只会更小"],
+        [977, "Squares of a Sorted Array", "squares-of-a-sorted-array", "Easy", "平方最大的在两端；从结果的末尾往前填"],
+      ] },
+      { name: "手法 2：排序后固定一个数", problems: [
+        [15, "3Sum", "3sum", "Medium", "排序，固定 i，在右边对撞；i、l、r 各自跳过重复值"],
+        [16, "3Sum Closest", "3sum-closest", "Medium", "同 15，对撞时记录与 target 差最小的和"],
+        [18, "4Sum", "4sum", "Medium", "两层循环固定两个数，里面再对撞；每层都要去重"],
+      ] },
+      { name: "手法 3：两个数组各一个指针", problems: [
+        [88, "Merge Sorted Array", "merge-sorted-array", "Easy", "从后往前填，较大的先放；只需等 nums2 用完"],
+        [392, "Is Subsequence", "is-subsequence", "Easy", "j 扫 t，匹配上 s[i] 时 i 才前进"],
+        [350, "Intersection of Two Arrays II", "intersection-of-two-arrays-ii", "Easy", "都排序；较小的一边前进，相等时收下并一起前进"],
+        [844, "Backspace String Compare", "backspace-string-compare", "Easy", "从后往前扫，用计数跳过被退格删掉的字符"],
+      ] },
+      { name: "组合", problems: [
+        [75, "Sort Colors", "sort-colors", "Medium", "三个区间：lo 左边是 0，hi 右边是 2；与 hi 交换后 i 不前进"],
+        [189, "Rotate Array", "rotate-array", "Medium", "三次反转：整体、前 k 个、其余；先 k %= n"],
+        [31, "Next Permutation", "next-permutation", "Medium", "从右找第一个下降的位置，与右边刚好比它大的数交换，再反转后缀"],
+        [42, "Trapping Rain Water", "trapping-rain-water", "Hard", "对撞并维护两侧最高值；较矮的一侧水位已定，结算后前进"],
+        [287, "Find the Duplicate Number", "find-the-duplicate-number", "Medium", "把 i → nums[i] 看成链表，重复的数就是入环点"],
+      ] },
+    ],
+  },
   { slug: "sliding-window", title: "滑动窗口", kind: "algo" },
   { slug: "binary-search", title: "二分查找", kind: "algo" },
   { slug: "stack", title: "栈与单调栈", kind: "algo" },

@@ -1,5 +1,6 @@
 # 判题脚本：在浏览器里由 Pyodide 执行（runner.js），也可以在本地用 CPython 跑（dev/check.py）。
 # run_all(用户代码, 题目 JSON) 返回 JSON：{"error": ...} 或 {"tests": [{ok, expect, got, err, out}]}
+import copy
 import io
 import json
 import sys
@@ -72,7 +73,7 @@ def conv_in(tp, v):
         return build(v)
     if tp == "lists":
         return [build(x) for x in v]
-    return v
+    return copy.deepcopy(v)     # 数组可能被原地修改，不动用例本身
 
 
 def run_case(S, p, t):
@@ -86,8 +87,17 @@ def run_case(S, p, t):
         r = f(*args)
         if p["out"] == "list":
             return dump(r)
-        if p["out"] == "inplace":
-            return dump(args[0])
+        if p["out"] == "inplace":   # 原地修改第一个参数：链表或数组
+            return dump(args[0]) if p["in"][0] == "list" else args[0]
+        if p["out"] in ("prefix", "prefix_sorted"):   # 返回长度 k，比较数组的前 k 个（prefix_sorted：顺序不限）
+            if not isinstance(r, int) or isinstance(r, bool):
+                raise TypeError(f"期望返回 int，得到 {type(r).__name__}")
+            head = args[0][:r]
+            return sorted(head) if p["out"] == "prefix_sorted" else head
+        if p["out"] in ("sorted", "unordered"):       # 顺序不限的结果：sorted 排一层，unordered 里外都排
+            if not isinstance(r, (list, tuple)):
+                raise TypeError(f"期望返回 list，得到 {type(r).__name__}")
+            return sorted(r) if p["out"] == "sorted" else sorted(sorted(x) for x in r)
         return r
     if kind == "delete_node":       # a = [值, 待删节点的下标]
         head = build(a[0])

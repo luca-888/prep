@@ -1,0 +1,77 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s01 数组是什么：一排相连的格子、按下标访问 → 删除一个要搬后面所有元素 → O(n²) → 不搬元素，用两个下标标位置 → 三种走法 -->
+  <div id="root" data-composition-id="s01" data-width="1920" data-height="1080">
+    <div id="s01-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s01;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s01-stage"), tl, DUR);
+      const X = (i) => 960 + (i - 2.5) * 146;       // 六个格子相连，边框重叠 4 px
+
+      L.header("数组", "下标与双指针", 0);
+      const VAL = [3, 1, 3, 2, 3, 4], Y = 330;
+      const N = VAL.map((v, i) => L.node(v, X(i), Y, { o: 1 }));
+      const MONO = "font-family:var(--mono);font-size:40px;color:var(--note)";
+
+      // —— 第 1 句：下标出现，nums[3] 直接点亮 ——
+      const idx = VAL.map((_, i) => L.label(String(i), X(i), Y + 100, MONO));
+      idx.forEach((l, i) => l.show(B[0] + 0.3 + i * 0.1));
+      const acc = L.label("nums[3]", X(3), Y - 120, "font-family:var(--mono);font-size:48px;font-weight:800;color:var(--tealD)");
+      acc.show(B[0] + 3.0);
+      N[3].fill("tealL", B[0] + 3.2).pulse(B[0] + 3.2, 1.08);
+      acc.hide(B[1] - 0.3);
+      N[3].fill("white", B[1] - 0.3);
+
+      // —— 第 2 句：删掉下标 2，后面三个格子依次左移 ——
+      N[2].fill("hotL", B[1] + 0.8);
+      N[2].move(null, Y + 190, B[1] + 2.4, 0.7, "power2.in").hide(B[1] + 2.5, 0.5);
+      [3, 4, 5].forEach((i, k) => {
+        const t = B[1] + 3.7 + k * 0.75;
+        N[i].fill("blueL", t, 0.15).move(X(i - 1), null, t, 0.5).fill("white", t + 0.65, 0.3);
+      });
+
+      idx[5].hide(B[1] + 5.9); idx[5].show(B[2] + 0.4);
+
+      // —— 第 3 句：恢复原状，三个 3 标橙，O(n²) ——
+      [3, 4, 5].forEach((i) => N[i].move(X(i), null, B[2] + 0.1, 0.5));
+      N[2].move(null, Y, B[2] + 0.2, 0.01).fill("white", B[2] + 0.2, 0.01).show(B[2] + 0.6);
+      [0, 2, 4].forEach((i, k) => N[i].fill("hotL", B[2] + 1.2 + k * 0.25));
+      const big = "font-family:var(--mono);font-size:72px;font-weight:800;";
+      const o2 = L.label("O(n²)", 960, Y - 150, big + "color:var(--hot-t)").show(B[2] + 2.8);
+
+      // —— 第 4 句：不移动元素；O(n)；两个下标落位 ——
+      o2.hide(B[3] + 0.5);
+      [0, 2, 4].forEach((i) => N[i].fill("white", B[3] + 0.5));
+      L.label("O(n)", 960, Y - 150, big + "color:var(--tealD)").show(B[3] + 0.9);
+      const pi = L.tag("i", "blue", N[0]).show(B[3] + 3.0);
+      const pj = L.tag("j", "hot", N[5]).show(B[3] + 3.4);
+      idx.forEach((l) => l.hide(B[3] + 2.7));
+
+      // —— 第 5 句：三种走法 ——
+      const chips = ["同向", "相向", "两个数组"].map((s, i) => {
+        const e = L.div(L.ui, `position:absolute;left:${470 + i * 340}px;top:690px;width:300px;text-align:center;padding:8px 0 10px;border:4px solid var(--tealD);border-radius:4px;font-size:44px;font-weight:800;color:var(--tealD);white-space:nowrap`, s);
+        gsap.set(e, { opacity: 0 });
+        return e;
+      });
+      const chip = (i, t) => L.ft(chips[i], { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t);
+      pj.move(N[1], B[4] + 0.5, 0.7);
+      chip(0, B[4] + 2.5);
+      pi.move(N[1], B[4] + 2.6, 0.4); pj.move(N[2], B[4] + 2.6, 0.4);
+      pi.move(N[2], B[4] + 3.1, 0.4); pj.move(N[3], B[4] + 3.1, 0.4);
+      chip(1, B[4] + 3.8);
+      pi.move(N[0], B[4] + 3.8, 0.4); pj.move(N[5], B[4] + 3.8, 0.4);
+      pi.move(N[1], B[4] + 4.4, 0.4); pj.move(N[4], B[4] + 4.4, 0.4);
+      pi.move(N[2], B[4] + 4.9, 0.4); pj.move(N[3], B[4] + 4.9, 0.4);
+      chip(2, B[4] + 5.8);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s01"] = tl;
+    })();
+  </script>
+</template>

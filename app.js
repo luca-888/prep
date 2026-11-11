@@ -116,7 +116,7 @@ const TIMEOUT = 5000;
 let W = null, Wready = false, job = null, seq = 0;
 function worker() {
   if (W) return W;
-  W = new Worker("runner.js?v=1"); Wready = false;
+  W = new Worker("runner.js?v=2"); Wready = false;
   W.onmessage = (e) => {
     if (e.data.ready) { Wready = true; if (job) arm(); return; }
     if (e.data.fatal) return finish({ error: "Python 运行环境加载失败：" + e.data.fatal });
@@ -127,7 +127,7 @@ function worker() {
 }
 function arm() {
   job.onstart();
-  job.timer = setTimeout(() => { W.terminate(); W = null; finish({ error: `超时（${TIMEOUT / 1000} 秒）：多半是死循环，或者把链表接成了环。` }); worker(); }, TIMEOUT);
+  job.timer = setTimeout(() => { W.terminate(); W = null; finish({ error: `超时（${TIMEOUT / 1000} 秒）：多半是死循环；链表题也可能是接成了环。` }); worker(); }, TIMEOUT);
 }
 function finish(res) { if (!job) return; clearTimeout(job.timer); const j = job; job = null; j.done(res); }
 function runCode(code, spec, onstart, done) {

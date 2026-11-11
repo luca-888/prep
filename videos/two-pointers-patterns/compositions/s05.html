@@ -1,0 +1,83 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s05 合并两个有序数组（LeetCode 88）：从前往后写会覆盖没读的元素 → 从后往前写：两个读指针、一个写指针 → 较大的写到末尾 → nums2 用完即结束 -->
+  <div id="root" data-composition-id="s05" data-width="1920" data-height="1080">
+    <div id="s05-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s05;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s05-stage"), tl, DUR);
+      const X = (i) => 960 + (i - 2.5) * 146;       // 六个格子相连，边框重叠 4 px
+
+      L.header("手法 3", "两个数组各一个指针");
+      const src = L.src("LeetCode 88 · 合并两个有序数组", B[0] + 0.6);
+      const Y1 = 290, Y2 = 550;
+      const A = [1, 2, 3, "", "", ""].map((v, i) => L.node(v, X(i), Y1));
+      const Bn = [2, 5, 6].map((v, i) => L.node(v, X(i), Y2));
+      const NAME = "font-family:var(--mono);font-size:36px;font-weight:700;color:var(--note)";
+      const n1 = L.label("nums1", X(0) - 185, Y1, NAME), n2 = L.label("nums2", X(0) - 185, Y2, NAME);
+
+      // —— 第 1 句 ——
+      [3, 4, 5].forEach((i) => A[i].fill("grayL", 0, 0.01).border("gray", 0, 0.01));
+      A.forEach((n, i) => n.show(0.05 + i * 0.08)); n1.show(0.2);
+      Bn.forEach((n, i) => n.show(B[0] + 1.0 + i * 0.08)); n2.show(B[0] + 1.0);
+      [3, 4, 5].forEach((i, k) => A[i].pulse(B[0] + 3.8 + k * 0.15, 1.08));
+
+      // —— 第 2 句：从前往后写会覆盖 3 ——
+      const g = L.node(2, X(0), Y2);
+      g.z(5, 0).fill("tealL", 0, 0.01);
+      g.o.to(1, B[1] + 2.2, 0.15);
+      g.x.to(X(2), B[1] + 2.3, 0.9); g.y.to(Y1 + 128, B[1] + 2.3, 0.9);
+      A[2].fill("redL", B[1] + 3.4).border("red", B[1] + 3.4);
+      const cover = L.label("覆盖", X(2), Y1 - 108, "background:var(--red);color:#fff;font-size:36px;font-weight:800;padding:4px 16px 6px;border-radius:3px");
+      cover.show(B[1] + 3.6);
+      const back = B[1] + 6.1;
+      cover.hide(back); g.o.to(0, back, 0.3);
+      A[2].fill("white", back).border("ink", back);
+
+      // —— 第 3 句：两个读指针、一个写指针 ——
+      const pi = L.tag("i", "blue", A[2]).show(B[2] + 4.6);
+      const pj = L.tag("j", "hot", Bn[2]).show(B[2] + 5.4);
+      const pk = L.tag("k", "teal", A[5], { side: -1 }).show(B[2] + 7.2);
+
+      // —— 第 4 句：比较，较大的写到末尾 ——
+      const cmp = L.swap(588, "left:1040px;width:700px;font-size:64px");
+      const write = (from, to, v, t) => { L.copy(from, to, v, t, 0.8); to.border("ink", t + 0.8); from.dim(0.35, t + 0.8); };
+      cmp.set('3 &lt; <span class="acc-o">6</span>', B[3] + 1.2);
+      write(Bn[2], A[5], 6, B[3] + 4.0);
+      pj.move(Bn[1], B[3] + 6.0, 0.4); pk.move(A[4], B[3] + 6.0, 0.4);
+
+      // —— 第 5 句：继续三步 ——
+      const OUT = L.slot(X(-1), Y2);
+      let t = B[4] + 0.4;
+      cmp.set('3 &lt; <span class="acc-o">5</span>', t); write(Bn[1], A[4], 5, t + 0.7);
+      pj.move(Bn[0], t + 1.7, 0.4); pk.move(A[3], t + 1.7, 0.4);
+      t = B[4] + 2.9;
+      cmp.set('<span class="acc-b">3</span> &gt; 2', t); write(A[2], A[3], 3, t + 0.7);
+      pi.move(A[1], t + 1.7, 0.4); pk.move(A[2], t + 1.7, 0.4);
+      t = B[4] + 5.4;
+      cmp.set('2 = <span class="acc-o">2</span>', t);
+      A[2].dim(1, t + 1.4, 0.1);
+      write(Bn[0], A[2], 2, t + 0.7);
+      pj.move(OUT, t + 1.7, 0.4); pk.move(A[1], t + 1.7, 0.4);
+
+      // —— 第 6 句：nums2 用完，结束 ——
+      cmp.hide(B[5] + 0.1);
+      pi.hide(B[5] + 3.4); pk.hide(B[5] + 3.4); pj.hide(B[5] + 3.4);
+      A[0].fill("tealL", B[5] + 3.8); A[1].fill("tealL", B[5] + 3.9);
+      A.forEach((n, i) => n.pulse(B[5] + 4.3 + i * 0.08, 1.06));
+
+      // —— 第 7 句 ——
+      L.ft(src, { opacity: 1 }, { opacity: 0, duration: 0.3 }, B[6] + 0.3);
+      L.src("LeetCode 88 · 392 · 350", B[6] + 0.6);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s05"] = tl;
+    })();
+  </script>
+</template>

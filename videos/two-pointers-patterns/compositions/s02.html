@@ -1,0 +1,66 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+  </style>
+  <!-- s02 读写指针（LeetCode 27）：fast 读、slow 写 → 读到 3 跳过 → 读到要保留的就写到 slow → 循环走完 → slow 左边是结果、slow 即新长度 -->
+  <div id="root" data-composition-id="s02" data-width="1920" data-height="1080">
+    <div id="s02-stage" style="position: absolute; inset: 0"></div>
+  </div>
+  <script>
+    (function () {
+      const { B, dur: DUR } = BEATS.s02;
+      const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
+      const L = LL(document.getElementById("s02-stage"), tl, DUR);
+      const X = (i) => 960 + (i - 2.5) * 146;       // 六个格子相连，边框重叠 4 px
+
+      L.header("基本动作", "读写指针：原地覆盖");
+      const src = L.src("LeetCode 27 · 删除值为 3 的元素", B[0] + 0.6);
+      const VAL = [3, 1, 3, 2, 3, 4], Y = 300;
+      const N = VAL.map((v, i) => L.node(v, X(i), Y));
+
+      // —— 第 1 句 ——
+      N.forEach((n, i) => n.show(0.02 + i * 0.08));
+      [0, 2, 4].forEach((i, k) => N[i].fill("hotL", B[0] + 1.2 + k * 0.2));
+      const fast = L.tag("fast", "hot", N[0], { lvl: 1 }).show(B[0] + 2.8);
+      const slow = L.tag("slow", "blue", N[0]).show(B[0] + 4.2);
+
+      // —— 第 2 句：读到 3，跳过 ——
+      const code = L.code(["for fast in range(len(nums)):", "    if nums[fast] != 3:", "        nums[slow] = nums[fast]", "        slow += 1"], { y: 620, w: 800 });
+      code.show(B[1] + 0.1).line([0, 1, 2, 3], B[1] + 0.2).hl(1, B[1] + 0.9);
+      fast.move(N[1], B[1] + 1.8, 0.4);
+
+      // —— 第 3 句：1 写到 slow 的位置，slow 前进 ——
+      code.hl(1, B[2] + 0.5).hl(2, B[2] + 2.2);
+      L.copy(N[1], N[0], 1, B[2] + 2.4, 0.8);
+      code.hl(3, B[2] + 4.4);
+      slow.move(N[1], B[2] + 4.5, 0.4);
+
+      // —— 第 4 句：其余四步 ——
+      const ts = B[3] + 0.5;
+      fast.move(N[2], ts, 0.35); code.hl(1, ts + 0.4);
+      fast.move(N[3], ts + 1.2, 0.35); code.hl(1, ts + 1.6).hl(2, ts + 2.0);
+      L.copy(N[3], N[1], 2, ts + 2.05, 0.65);
+      code.hl(3, ts + 2.85); slow.move(N[2], ts + 2.9, 0.35);
+      fast.move(N[4], ts + 3.6, 0.35); code.hl(1, ts + 4.0);
+      fast.move(N[5], ts + 4.8, 0.35); code.hl(1, ts + 5.2).hl(2, ts + 5.6);
+      L.copy(N[5], N[2], 4, ts + 5.65, 0.65);
+      code.hl(3, ts + 6.45); slow.move(N[3], ts + 6.5, 0.35);
+      code.hl(0, ts + 7.2).hlOff(ts + 7.8);
+
+      // —— 第 5 句：slow 左边是结果，slow 即新长度 ——
+      fast.hide(B[4] + 0.2);
+      [3, 4, 5].forEach((i) => N[i].dim(0.3, B[4] + 0.6));
+      [0, 1, 2].forEach((i, k) => N[i].pulse(B[4] + 1.0 + k * 0.2, 1.08));
+      L.label("k = 3", X(1), Y - 125, "font-family:var(--mono);font-size:52px;font-weight:800;color:var(--tealD)").show(B[4] + 3.6);
+
+      // —— 第 6 句：同一段循环，换保留的条件 ——
+      L.ft(src, { opacity: 1 }, { opacity: 0, duration: 0.3 }, B[5] + 0.3);
+      L.src("LeetCode 27 · 26 · 283", B[5] + 0.6);
+      code.hl(1, B[5] + 3.6).hl(1, B[5] + 4.3).hl(1, B[5] + 5.0);
+
+      L.done();
+      window.__timelines = window.__timelines || {};
+      window.__timelines["s02"] = tl;
+    })();
+  </script>
+</template>
