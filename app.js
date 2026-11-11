@@ -8,17 +8,16 @@ const addDays = (d, n) => { const x = new Date(d + "T00:00:00"); x.setDate(x.get
 
 let P = {};
 try { P = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { P = {}; }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch {} };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch {} window.Sync && Sync.changed(); };
 const stat = (id) => (P[id] && P[id].s) || "none";
 const dueOf = (id) => (stat(id) === "review" ? addDays(P[id].d, STEPS[Math.min(P[id].n || 0, STEPS.length - 1)]) : null);
 function setStat(id, s) {
-  if (s === "none") delete P[id];
-  else P[id] = { s, d: today(), n: 0 };
+  P[id] = s === "none" ? { s, t: Date.now() } : { s, d: today(), n: 0, t: Date.now() };   // t：最后修改时间，同步时按它合并；“未做”也留一条，别的设备才知道它被清掉了
   save();
 }
 function reviewed(id) {                            // 复习了一次：进入下一个间隔，走完全部间隔后记为熟练
   const n = (P[id].n || 0) + 1;
-  P[id] = n >= STEPS.length ? { s: "solid", d: today(), n: 0 } : { s: "review", d: today(), n };
+  P[id] = n >= STEPS.length ? { s: "solid", d: today(), n: 0, t: Date.now() } : { s: "review", d: today(), n, t: Date.now() };
   save();
 }
 
@@ -139,6 +138,28 @@ function runCode(code, spec, onstart, done) {
 const markSeg = (el) => el.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x.dataset.s === stat(+el.dataset.id)));
 const J = (v) => JSON.stringify(v);
 
+// 补全：代码里出现过的名字在前，然后是常用变量名、关键字与内置函数；点号后面只给属性和方法。Tab 接受，Esc 关闭，回车照常换行
+const HINT_NAMES = ("head dummy prev cur nxt slow fast tail node left right mid res ans count carry stack queue seen self " +
+  "False None True and as assert break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield " +
+  "abs all any bool dict divmod enumerate float int isinstance len list map max min print range reversed set sorted str sum tuple zip Optional List ListNode collections deque defaultdict Counter heapq heappush heappop math").split(" ");
+const HINT_ATTRS = "next val left right append pop popleft appendleft extend insert remove sort reverse add discard get items keys values setdefault join split strip count index".split(" ");
+function pyHint(cm) {
+  const cur = cm.getCursor(), line = cm.getLine(cur.line);
+  if (/comment|string/.test(cm.getTokenTypeAt(cur) || "")) return null;
+  let s = cur.ch; while (s > 0 && /\w/.test(line[s - 1])) s--;
+  const pre = line.slice(s, cur.ch), dot = line[s - 1] === ".";
+  if (/^\d/.test(pre) || (!dot && pre.length < 2)) return null;
+  const from = { line: cur.line, ch: s }, text = cm.getValue(), i = cm.indexFromPos(from);
+  const rest = text.slice(0, i) + " " + text.slice(i + pre.length);          // 去掉正在输入的这个词
+  const own = [...rest.matchAll(dot ? /\.([A-Za-z_]\w*)/g : /(?<![.\w])([A-Za-z_]\w*)/g)].map((m) => m[1]);
+  const low = pre.toLowerCase();
+  const list = [...new Set([...own, ...(dot ? HINT_ATTRS : HINT_NAMES)])].filter((w) => w !== pre && w.toLowerCase().startsWith(low)).slice(0, 8);
+  return list.length ? { list, from, to: cur } : null;
+}
+const hint = (cm) => cm.showHint({ hint: pyHint, completeSingle: false, customKeys: {
+  Up: (c, h) => h.moveFocus(-1), Down: (c, h) => h.moveFocus(1), Tab: (c, h) => h.pick(), Esc: (c, h) => h.close(),
+} });
+
 const stmtOpen = () => { try { return localStorage.getItem("prep.stmt") !== "0"; } catch { return true; } };   // 记住题目是否收起
 function problem(id) {
   const p = ALL.find((x) => x.id === id), spec = window.PROBLEMS[id];
@@ -160,13 +181,21 @@ function problem(id) {
   const cm = CodeMirror.fromTextArea(document.getElementById("code"), {
     mode: "python", theme: "dracula", lineNumbers: true, lineWrapping: true, viewportMargin: Infinity, indentUnit: 4, tabSize: 4, matchBrackets: true, autoCloseBrackets: true,
     extraKeys: {
-      Tab: (c) => (c.somethingSelected() ? c.indentSelection("add") : c.replaceSelection("    ", "end")),
+      Tab: (c) => (c.somethingSelected() ? c.indentSelection("add") : c.replaceSelection(" ".repeat(4 - (c.getCursor().ch % 4)), "end")),
       "Shift-Tab": (c) => c.indentSelection("subtract"),
+      Backspace: (c) => {                          // 行首缩进里退格：一次退到上一个 4 格
+        if (c.somethingSelected()) return CodeMirror.Pass;
+        const pos = c.getCursor();
+        if (!pos.ch || /\S/.test(c.getLine(pos.line).slice(0, pos.ch))) return CodeMirror.Pass;
+        c.replaceRange("", { line: pos.line, ch: pos.ch - (((pos.ch - 1) % 4) + 1) }, pos);
+      },
+      "Ctrl-Space": (c) => hint(c),
       "Cmd-Enter": () => run(), "Ctrl-Enter": () => run(), "Cmd-/": "toggleComment", "Ctrl-/": "toggleComment",
     },
   });
+  cm.on("inputRead", (c, ch) => { if (ch.origin === "+input" && /[\w.]/.test(ch.text[0])) hint(c); });
   cm.setValue(saved ?? initial);
-  cm.on("change", () => { try { localStorage.setItem(CK, cm.getValue()); } catch {} });
+  cm.on("change", () => { try { localStorage.setItem(CK, cm.getValue()); localStorage.setItem("prep.codet." + id, Date.now()); } catch {} window.Sync && Sync.changed(5000); });
   const out = document.getElementById("result"), st = document.getElementById("runstat");
   const input = (t) => spec.params.map((n, i) => `${n} = ${J(t.args[i])}`).join("，");
   function show(r) {
@@ -231,10 +260,22 @@ file.onchange = async () => {
   try {
     const data = JSON.parse(await file.files[0].text());
     if (!data || typeof data !== "object" || Array.isArray(data)) throw 0;
-    if (!confirm(`导入 ${Object.keys(data).length} 道题的进度，覆盖当前的 ${Object.keys(P).length} 道？`)) return;
-    P = data; save(); route();
+    const n = (o) => Object.values(o).filter((e) => e && e.s && e.s !== "none").length;
+    if (!confirm(`导入 ${n(data)} 道题的进度，覆盖当前的 ${n(P)} 道？`)) return;
+    const t = Date.now(), next = {};               // 导入的整份都记为刚刚修改，同步时才不会被别的设备上的旧进度盖回去
+    for (const k in P) next[k] = { s: "none", t };
+    for (const k in data) if (data[k] && data[k].s) next[k] = { ...data[k], t };
+    P = next; save(); route();
   } catch { alert("这不是导出的进度文件。"); }
   file.value = "";
+};
+
+// 同步带回了别的设备上的改动：做题页只在这道题的代码变了时才重绘，免得打断正在写的代码
+window.onSynced = (progress, codeIds) => {
+  const ws = app.querySelector(".ws");
+  if (!ws) return progress && rerender();
+  if (codeIds.includes(+location.hash.slice(4))) return rerender();
+  markSeg(ws.querySelector(".seg"));
 };
 
 window.addEventListener("hashchange", route);

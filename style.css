@@ -139,7 +139,14 @@ pre.err, pre.stdout { margin: 8px 0 4px 26px; padding: 10px 14px; font-family: v
 pre.err { background: #fbeeeb; color: #8f2f22; }
 pre.stdout { background: var(--surface); color: var(--text); }
 .CodeMirror-scroll { min-height: 420px; }
-.CodeMirror .cm-comment { color: #9aa5ce; }
+/* 编辑器配色对齐 cheatsheet 的代码块（highlight.js base16/dracula），而不是 CodeMirror 自带的 dracula */
+.CodeMirror.cm-s-dracula span.cm-comment { color: #8791c0; }
+.CodeMirror.cm-s-dracula span.cm-keyword, .CodeMirror.cm-s-dracula span.cm-number, .CodeMirror.cm-s-dracula span.cm-atom, .CodeMirror.cm-s-dracula span.cm-type, .CodeMirror.cm-s-dracula span.cm-variable-3 { color: #b45bcf; }
+.CodeMirror.cm-s-dracula span.cm-def { color: #62d6e8; }
+.CodeMirror.cm-s-dracula span.cm-builtin { color: #a1efe4; }
+.CodeMirror.cm-s-dracula span.cm-string, .CodeMirror.cm-s-dracula span.cm-string-2 { color: #ebff87; }
+.CodeMirror.cm-s-dracula span.cm-meta { color: #00f769; }
+.CodeMirror.cm-s-dracula span.cm-variable, .CodeMirror.cm-s-dracula span.cm-variable-2, .CodeMirror.cm-s-dracula span.cm-property, .CodeMirror.cm-s-dracula span.cm-operator { color: #f8f8f2; }
 .stmt { font-size: 16.5px; margin-bottom: 18px; }
 .stmt p { margin: 8px 0; }
 .stmt pre { background: var(--surface); border: 1px solid var(--border); padding: 10px 16px; margin: 10px 0 0; line-height: 1.65; }
@@ -149,3 +156,20 @@ details.stmt { border: 1px solid var(--border); border-radius: 8px; padding: 0 1
 details.stmt[open] { padding-bottom: 14px; }
 details.stmt summary { cursor: pointer; padding: 7px 0; font-size: 14px; color: var(--muted); user-select: none; }
 details.stmt summary:hover { color: var(--heading); }
+
+/* 编辑器补全列表 */
+.CodeMirror-hints { background: #21222c; border: 1px solid #44475a; border-radius: 6px; box-shadow: 0 6px 20px rgba(0, 0, 0, .35); padding: 4px; font-family: var(--mono); font-size: 13.5px; z-index: 50; }
+.CodeMirror-hint { color: #f8f8f2; padding: 3px 10px; border-radius: 4px; }
+li.CodeMirror-hint-active { background: #44475a; color: #f8f8f2; }
+
+/* 同步 */
+#sync.sync-idle { color: var(--second); }
+#sync.sync-busy { color: var(--muted); }
+#sync.sync-err { color: var(--hard); border-color: var(--hard); }
+#syncdlg { width: min(460px, calc(100vw - 32px)); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; color: var(--text); font-size: 15px; line-height: 1.7; box-shadow: 0 12px 40px rgba(0, 0, 0, .18); }
+#syncdlg::backdrop { background: rgba(0, 0, 0, .25); }
+#syncdlg h3 { margin: 0 0 8px; }
+#syncdlg p { margin: 8px 0; }
+#syncdlg input { width: 100%; font: inherit; font-family: var(--mono); font-size: 14px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; }
+#syncdlg .row { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
+#syncdlg .bad { color: var(--hard); min-height: 1em; }

@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/dracula.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
-    <link rel="stylesheet" href="style.css?v=11" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css" />
+    <link rel="stylesheet" href="style.css?v=13" />
   </head>
   <body>
     <header class="top">
@@ -17,6 +18,7 @@
         <a href="#/cheatsheet">Cheatsheet</a>
       </nav>
       <span class="grow"></span>
+      <button id="sync">同步</button>
       <button id="export">导出进度</button>
       <button id="import">导入进度</button>
       <input id="file" type="file" accept="application/json" hidden />
@@ -29,8 +31,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
     <script src="data.js?v=4"></script>
     <script src="problems.js?v=2"></script>
-    <script src="app.js?v=10"></script>
+    <script src="app.js?v=12"></script>
+    <script src="sync.js?v=1"></script>
   </body>
 </html>
